@@ -6,17 +6,28 @@
 // Execute `rustlings hint iterators2` or use the `hint` watch subcommand for a
 // hint.
 
-// I AM NOT DONE
-
 // Step 1.
 // Complete the `capitalize_first` function.
 // "hello" -> "Hello"
 pub fn capitalize_first(input: &str) -> String {
-    let mut c = input.chars();
-    match c.next() {
-        None => String::new(),
-        Some(first) => ???,
-    }
+    let mut buf = String::with_capacity(input.len());
+    
+    // I used a match statement here first, checking for whitespace
+    // but it ended up making no sense returning a space in the first
+    // place, so I just trimmed...
+    //  But then it won't pass the iter to string test :D
+
+    for (idx, character) in input.chars().enumerate() {
+        let matching: char = 
+            match idx {
+                0 => character.to_ascii_uppercase(),
+                _ if character.is_whitespace() && idx == 0 => character,
+                _ => character
+                };
+        buf.push(matching)
+    };
+
+    buf
 }
 
 // Step 2.
@@ -24,7 +35,13 @@ pub fn capitalize_first(input: &str) -> String {
 // Return a vector of strings.
 // ["hello", "world"] -> ["Hello", "World"]
 pub fn capitalize_words_vector(words: &[&str]) -> Vec<String> {
-    vec![]
+    let words = words.iter();
+    let mut output = Vec::new();
+    for word in words {
+        let word = capitalize_first(word);
+        output.push(word)
+        }; 
+    output
 }
 
 // Step 3.
@@ -32,7 +49,12 @@ pub fn capitalize_words_vector(words: &[&str]) -> Vec<String> {
 // Return a single string.
 // ["hello", " ", "world"] -> "Hello World"
 pub fn capitalize_words_string(words: &[&str]) -> String {
-    String::new()
+    let mut buf = String::new();
+    for word in words {
+        buf.push_str(capitalize_first(word).as_str());
+    };
+    
+    buf
 }
 
 #[cfg(test)]
