@@ -16,12 +16,14 @@ pub fn capitalize_first(input: &str) -> String {
     // but it ended up making no sense returning a space in the first
     // place, so I just trimmed...
     //  But then it won't pass the iter to string test :D
+    //
+    //  This is a "solution" made without watching the hints...
 
     for (idx, character) in input.chars().enumerate() {
         let matching: char = 
             match idx {
                 0 => character.to_ascii_uppercase(),
-                _ if character.is_whitespace() && idx == 0 => character,
+                _ if character.is_whitespace() => character,
                 _ => character
                 };
         buf.push(matching)
@@ -35,12 +37,11 @@ pub fn capitalize_first(input: &str) -> String {
 // Return a vector of strings.
 // ["hello", "world"] -> ["Hello", "World"]
 pub fn capitalize_words_vector(words: &[&str]) -> Vec<String> {
-    let words = words.iter();
-    let mut output = Vec::new();
-    for word in words {
-        let word = capitalize_first(word);
-        output.push(word)
-        }; 
+    let output = words
+        .into_iter()
+        .map(|word| capitalize_first(word))            
+        .collect();
+
     output
 }
 
@@ -49,12 +50,11 @@ pub fn capitalize_words_vector(words: &[&str]) -> Vec<String> {
 // Return a single string.
 // ["hello", " ", "world"] -> "Hello World"
 pub fn capitalize_words_string(words: &[&str]) -> String {
-    let mut buf = String::new();
-    for word in words {
-        buf.push_str(capitalize_first(word).as_str());
-    };
-    
-    buf
+    words
+        .into_iter()
+        .map(|word| capitalize_first(word))
+        .collect()
+
 }
 
 #[cfg(test)]
