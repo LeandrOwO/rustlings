@@ -44,6 +44,9 @@ impl Default for Person {
 
 impl From<&str> for Person {
     fn from(s: &str) -> Person {
+            match s.split_once(',') {
+                _ => todo!() // Some((first, second)) => {} 
+            }
     }
 }
 
