@@ -40,12 +40,20 @@ impl Default for Person {
 // If while parsing the age, something goes wrong, then return the default of
 // Person Otherwise, then return an instantiated Person object with the results
 
-// I AM NOT DONE
-
 impl From<&str> for Person {
     fn from(s: &str) -> Person {
             match s.split_once(',') {
-                _ => todo!() // Some((first, second)) => {} 
+                Some((name, age)) => {
+                    if !name.is_empty() && age.parse::<usize>().is_ok() {
+                        let (name, age) = (name.to_string(), age.parse::<usize>().unwrap());
+                    // I'm parsing age and binding variables twice here. This compiles, but
+                    // it's probably efficient...
+                        Person{ name,  age}
+                    } else {
+                        Person::default()
+                    }
+                },
+                _ => Person::default()
             }
     }
 }

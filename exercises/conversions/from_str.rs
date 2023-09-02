@@ -52,6 +52,23 @@ enum ParsePersonError {
 impl FromStr for Person {
     type Err = ParsePersonError;
     fn from_str(s: &str) -> Result<Person, Self::Err> {
+        let s: Vec<&str> = s.split(',').collect();
+        match s {
+            _empty if s.len() == 0 => { return Err(ParsePersonError::Empty) },
+            _len if s.len() != 2 => { return Err(ParsePersonError::BadLen) },
+            _ => {
+                let (first, second) = (s[0], s[1]);
+
+                if first.is_empty() { 
+                    return Err(ParsePersonError::NoName)
+                } else {
+                    match second.parse::<usize>() {
+                        Err(e) => return Err(ParsePersonError::ParseInt(e)),
+                        Ok(age) => return Ok(Person {name: first.into(), age})
+                    }
+                }
+            }
+        }
     }
 }
 
