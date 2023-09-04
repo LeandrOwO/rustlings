@@ -11,6 +11,7 @@
 
 use std::num::ParseIntError;
 use std::str::FromStr;
+use ParsePersonError::{*}; // This was essencial to stop typing Err enum.
 
 #[derive(Debug, PartialEq)]
 struct Person {
@@ -30,8 +31,6 @@ enum ParsePersonError {
     // Wrapped error from parse::<usize>()
     ParseInt(ParseIntError),
 }
-
-// I AM NOT DONE
 
 // Steps:
 // 1. If the length of the provided string is 0, an error should be returned
@@ -53,17 +52,20 @@ impl FromStr for Person {
     type Err = ParsePersonError;
     fn from_str(s: &str) -> Result<Person, Self::Err> {
         let s: Vec<&str> = s.split(',').collect();
+        let s_len: usize = s.len(); // storing its lenght instead of calling .len() multiple times
+
         match s {
-            _empty if s.len() == 0 => { return Err(ParsePersonError::Empty) },
-            _len if s.len() != 2 => { return Err(ParsePersonError::BadLen) },
+            _empty if s_len == 0 => { return Err(Empty) },
+            _empty_str if s_len == 1 && s[0].is_empty() => { return Err(Empty)}
+            _len if s_len != 2 => { return Err(BadLen) },
             _ => {
                 let (first, second) = (s[0], s[1]);
 
                 if first.is_empty() { 
-                    return Err(ParsePersonError::NoName)
+                    return Err(NoName)
                 } else {
                     match second.parse::<usize>() {
-                        Err(e) => return Err(ParsePersonError::ParseInt(e)),
+                        Err(e) => return Err(ParseInt(e)),
                         Ok(age) => return Ok(Person {name: first.into(), age})
                     }
                 }
